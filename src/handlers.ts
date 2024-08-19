@@ -1,9 +1,10 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { handleConnect, handleDisconnect } from "./handlers/connectionHandlers";
 import { handleGetClients } from "./handlers/clientHandlers";
-import { handleSendMessage, handleGetMessages } from "./handlers/messageHandlers";
+import { handleConnect, handleDisconnect } from "./handlers/connectionHandlers";
+import { handleGetMessages, handleSendMessage } from "./handlers/messageHandlers";
+import { postToConnection } from "./utils/apiGateway";
+import { responseForbidden, responseOK } from "./utils/constants";
 import { HandlerError } from "./utils/errorHandler";
-import { responseOK, responseForbidden } from "./utils/constants";
 
 export const handle = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const connectionId = event.requestContext.connectionId as string;
