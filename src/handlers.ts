@@ -1,12 +1,12 @@
-import AWS, { AWSError } from "aws-sdk";
 import {
   APIGatewayProxyEvent,
   APIGatewayProxyEventQueryStringParameters,
   APIGatewayProxyResult
 } from "aws-lambda";
+import AWS, { AWSError } from "aws-sdk";
+import { CLIENTS_TABLE_NAME } from "./constants";
 import { responseOK } from "./responses";
 import { Action } from "./types";
-import { CLIENTS_TABLE_NAME } from "./constants";
 
 const docClient = new AWS.DynamoDB.DocumentClient();
 
