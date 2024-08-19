@@ -1,12 +1,8 @@
-import {
-  APIGatewayProxyEvent,
-  APIGatewayProxyEventQueryStringParameters,
-  APIGatewayProxyResult
-} from "aws-lambda";
+import { APIGatewayProxyEvent, APIGatewayProxyEventQueryStringParameters, APIGatewayProxyResult } from "aws-lambda";
 import AWS, { AWSError } from "aws-sdk";
 import { CLIENTS_TABLE_NAME } from "./constants";
 import { responseOK } from "./responses";
-import { Action } from "./types";
+import { Action, Client } from "./types";
 
 const docClient = new AWS.DynamoDB.DocumentClient();
 
@@ -15,7 +11,6 @@ const apigw = new AWS.ApiGatewayManagementApi({
 });
 
 export const handle = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-
   const connectionId = event.requestContext.connectionId as string;
 
   const routeKey = event.requestContext.routeKey as Action;
@@ -40,13 +35,13 @@ export const handle = async (event: APIGatewayProxyEvent): Promise<APIGatewayPro
 
 const handleConnect = async (
   connectionId: string,
-  queryParameters: APIGatewayProxyEventQueryStringParameters | null
+  queryParameters: APIGatewayProxyEventQueryStringParameters | null,
 ): Promise<APIGatewayProxyResult> => {
-  if (!queryParameters || !queryParameters['nickname']) {
+  if (!queryParameters || !queryParameters["nickname"]) {
     return {
       statusCode: 403,
       body: "",
-    }
+    };
   }
 
   await docClient
@@ -59,31 +54,29 @@ const handleConnect = async (
     })
     .promise();
 
+  await notifyClients(connectionId);
+
   return responseOK;
 };
 
-const handleDisconnect = async (
-  connectionId: string,
-): Promise<APIGatewayProxyResult> => {
+const handleDisconnect = async (connectionId: string): Promise<APIGatewayProxyResult> => {
   await docClient
     .delete({
       TableName: CLIENTS_TABLE_NAME,
-      Item: {
+      Key: {
         connectionId,
       },
     })
     .promise();
 
+  await notifyClients(connectionId);
+
   return responseOK;
 };
 
-const isConnectionNotExistError = (e: unknown) =>
-  (e as AWSError).statusCode === 410;
+const isConnectionNotExistError = (e: unknown) => (e as AWSError).statusCode === 410;
 
-const postToConnection = async (
-  connectionId: string,
-  messageBody: string,
-): Promise<boolean> => {
+const postToConnection = async (connectionId: string, messageBody: string): Promise<boolean> => {
   try {
     await apigw
       .postToConnection({
@@ -111,19 +104,33 @@ const postToConnection = async (
   }
 };
 
-const handleGetClients = async (connectionId: string): Promise<APIGatewayProxyResult> => {
+const getAllClients = async () => {
   const output = await docClient
     .scan({
-      TableName: CLIENTS_TABLE_NAME
+      TableName: CLIENTS_TABLE_NAME,
     })
     .promise();
 
   const clients = output.Items ?? [];
-  await postToConnection(
-    connectionId,
-    JSON.stringify({ type: "clients", value: clients })
-  )
+  return clients as Client[];
+};
+
+const handleGetClients = async (connectionId: string): Promise<APIGatewayProxyResult> => {
+  const clients = await getAllClients();
+  await postToConnection(connectionId, JSON.stringify({ type: "clients", value: clients }));
 
   return responseOK;
-}
+};
 
+const notifyClients = async (connnectionIdToExclude: string) => {
+  const clients = await getAllClients();
+  await Promise.all(
+    clients.map(async (c) => {
+      if (c.connectionId !== connnectionIdToExclude) {
+        return;
+      }
+
+      await postToConnection(c.connectionId, JSON.stringify({ type: "clients", value: clients }));
+    }),
+  );
+};

@@ -4,3 +4,8 @@ export type Action =
   | "sendMessage"
   | "$connect"
   | "$disconnect";
+
+export interface Client {
+  connectionId: string;
+  nickname: string;
+};
