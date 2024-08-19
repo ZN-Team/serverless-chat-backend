@@ -2,10 +2,9 @@ import AWS from "aws-sdk";
 import { APIGatewayProxyEvent, APIGatewayProxyEventQueryStringParameters, APIGatewayProxyResult } from "aws-lambda";
 import { responseOK } from "./responses";
 import { Action } from "./types";
+import { CLIENTS_TABLE_NAME } from "./constants";
 
 const docClient = new AWS.DynamoDB.DocumentClient();
-
-const CLIENTS_TABLE_NAME = "Clients";
 
 export const handle = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
 
@@ -17,13 +16,15 @@ export const handle = async (event: APIGatewayProxyEvent): Promise<APIGatewayPro
     case "$connect":
       return handleConnect(connectionId, event.queryStringParameters);
 
+    case "$disconnect":
+      return handleDisconnect(connectionId);
+
     default:
       return {
         statusCode: 500,
         body: "",
       };
   }
-
 };
 
 const handleConnect = async (
@@ -49,3 +50,19 @@ const handleConnect = async (
 
   return responseOK;
 };
+
+const handleDisconnect = async (
+  connectionId: string,
+): Promise<APIGatewayProxyResult> => {
+  await docClient
+    .delete({
+      TableName: CLIENTS_TABLE_NAME,
+      Item: {
+        connectionId,
+      },
+    })
+    .promise();
+
+  return responseOK;
+};
+
