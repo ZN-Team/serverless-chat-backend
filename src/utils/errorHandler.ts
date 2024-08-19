@@ -1,1 +1,1 @@
-export class HandlerError extends Error { }
+export class HandlerError extends Error {}

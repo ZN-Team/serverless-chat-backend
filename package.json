@@ -1,25 +1,26 @@
 {
-  "name": "serverless-chat",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy": "serverless deploy"
-  },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@types/aws-lambda": "^8.10.102",
-    "@types/node": "^18.7.13",
-    "@types/uuid": "^10.0.0",
-    "prettier": "^2.7.1",
-    "serverless": "^3.22.0",
-    "serverless-plugin-typescript": "^2.1.2",
-    "typescript": "^4.7.4"
-  },
-  "dependencies": {
-    "aws-lambda": "^1.0.7",
-    "uuid": "^10.0.0"
-  }
+    "name": "serverless-chat",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "deploy": "serverless deploy"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@types/aws-lambda": "^8.10.102",
+        "@types/node": "^18.7.13",
+        "@types/uuid": "^10.0.0",
+        "prettier": "2.8.8",
+        "prettier-plugin-organize-imports": "^4.0.0",
+        "serverless": "^3.22.0",
+        "serverless-plugin-typescript": "^2.1.2",
+        "typescript": "^4.7.4"
+    },
+    "dependencies": {
+        "aws-lambda": "^1.0.7",
+        "uuid": "^10.0.0"
+    }
 }
