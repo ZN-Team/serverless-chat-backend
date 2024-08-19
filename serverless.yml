@@ -29,23 +29,53 @@ provider:
 #  stage: dev
   region: ap-southeast-1
 
+  environment:
+    WSSAPIGATEWAYENDPOINT:
+      Fn::Join:
+        - ""
+        - - Ref: WebsocketsApi
+          - ".execute-api."
+          - Ref: AWS::Region
+          - ".amazonaws.com/${sls:stage}"
+
 # you can add statements to the Lambda function's IAM Role here
-#  iam:
-#    role:
-#      statements:
-#        - Effect: "Allow"
-#          Action:
-#            - "s3:ListBucket"
-#          Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
-#        - Effect: "Allow"
-#          Action:
-#            - "s3:PutObject"
-#          Resource:
-#            Fn::Join:
-#              - ""
-#              - - "arn:aws:s3:::"
-#                - "Ref" : "ServerlessDeploymentBucket"
-#                - "/*"
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - "dynamodb:PutItem"
+            - "dynamodb:GetItem"
+            - "dynamodb:DeleteItem"
+            - "dynamodb:Scan"
+          Resource:
+            - { "Fn::GetAtt": ["ClientsTable", "Arn"] }
+        - Effect: Allow
+          Action:
+            - "dynamodb:Query"
+          Resource:
+            Fn::Join:
+              - "/"
+              - - { "Fn::GetAtt": ["ClientsTable", "Arn"] }
+                - "index"
+                - "*"
+        - Effect: Allow
+          Action:
+            - "dynamodb:PutItem"
+            - "dynamodb:GetItem"
+            - "dynamodb:DeleteItem"
+            - "dynamodb:Scan"
+          Resource:
+            - { "Fn::GetAtt": ["MessagesTable", "Arn"] }
+        - Effect: Allow
+          Action:
+            - "dynamodb:Query"
+          Resource:
+            Fn::Join:
+              - "/"
+              - - { "Fn::GetAtt": ["MessagesTable", "Arn"] }
+                - "index"
+                - "*"
 
 # you can define service wide environment variables here
 #  environment:
