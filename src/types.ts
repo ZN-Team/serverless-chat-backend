@@ -1,4 +1,4 @@
-export type Action = 'getClients' | 'getMessages' | 'sendMessage' | '$connect' | '$disconnect';
+export type Action = 'getMessages' | 'sendMessage' | '$connect' | '$disconnect';
 
 export interface Client {
     connectionId: string;

@@ -1,5 +1,5 @@
 import { APIGatewayProxyEventQueryStringParameters } from 'aws-lambda';
-import { addClient, getConnectionIdByUserId, notifyClientChange, removeClient } from '../dynamoDB/clientOperations';
+import { addClient, getConnectionIdByUserId, removeClient } from '../dynamoDB/clientOperations';
 import { postToConnection } from '../utils/apiGateway';
 import { responseForbidden, responseOK } from '../utils/constants';
 
@@ -21,14 +21,12 @@ export const handleConnect = async (
     }
 
     await addClient(connectionId, userId);
-    await notifyClientChange(connectionId);
 
     return responseOK;
 };
 
 export const handleDisconnect = async (connectionId: string) => {
     await removeClient(connectionId);
-    await notifyClientChange(connectionId);
 
     return responseOK;
 };

@@ -1,5 +1,4 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { handleGetClients } from './handlers/clientHandlers';
 import { handleConnect, handleDisconnect } from './handlers/connectionHandlers';
 import { handleGetMessages, handleSendMessage } from './handlers/messageHandlers';
 import { postToConnection } from './utils/apiGateway';
@@ -16,9 +15,6 @@ export const handle = async (event: APIGatewayProxyEvent): Promise<APIGatewayPro
                 return handleConnect(connectionId, event.queryStringParameters);
             case '$disconnect':
                 return handleDisconnect(connectionId);
-            // TODO: Remove this case
-            case 'getClients':
-                return handleGetClients(connectionId);
             case 'sendMessage':
                 return handleSendMessage(connectionId, event.body);
             case 'getMessages':

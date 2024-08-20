@@ -44,14 +44,3 @@ export const getAllClients = async (): Promise<Client[]> => {
     const output = await docClient.scan({ TableName: CLIENTS_TABLE_NAME }).promise();
     return output.Items as Client[];
 };
-
-export const notifyClientChange = async (excludedConnectionId: string) => {
-    const clients = await getAllClients();
-    await Promise.all(
-        clients.map(async c => {
-            if (excludedConnectionId !== c.connectionId) {
-                await postToConnection(c.connectionId, JSON.stringify({ type: 'clients', value: clients }));
-            }
-        })
-    );
-};
