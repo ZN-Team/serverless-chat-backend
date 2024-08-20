@@ -11,6 +11,7 @@ export const handleConnect = async (
         return responseForbidden;
     }
 
+    // TODO: Allow multiple connections with the same nickname
     const existingConnectionId = await getConnectionIdByNickname(queryParameters['nickname']);
     if (existingConnectionId && (await postToConnection(existingConnectionId, JSON.stringify({ type: 'ping' })))) {
         return responseForbidden;

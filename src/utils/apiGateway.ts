@@ -6,6 +6,9 @@ const apigw = new AWS.ApiGatewayManagementApi({
     endpoint: process.env.WSSAPIGATEWAYENDPOINT,
 });
 
+/**
+ * Send a message to a connection, and delete the connection if it is no longer active.
+ */
 export const postToConnection = async (connectionId: string, messageBody: string): Promise<boolean> => {
     try {
         await apigw.postToConnection({ ConnectionId: connectionId, Data: messageBody }).promise();
