@@ -60,6 +60,26 @@ ws.send(JSON.stringify({
 }));
 ```
 
+Afterward, the server sends back another websocket message containing those messages that you need. You can get inspiration from the following code.
+
+```ts
+ws.onmessage = (event) => {
+    const msg = JSON.parse(event.data) as {
+        type: string;
+        value: unknown;
+    };
+
+    if (msg.type === "messages") {
+        const body = msg.value as {
+            messages: { senderId: string; content: string }[];
+            lastEvaluatedKey: unknown;
+        };
+
+        // Do something with the above data
+    }
+};
+```
+
 ### Sending Messages
 ```javascript
 ws.send(JSON.stringify({
@@ -67,6 +87,23 @@ ws.send(JSON.stringify({
     recipientId: 'YYYYYYYY-YYYY-YYYY-YYYY-YYYYYYYYYYYY',
     content: 'Hello, Bob!'
 }));
+```
+
+After handling the new message successfully, the server sends a new message to the recipient. See the following code on how to handle it.
+
+```ts
+ws.onmessage = (event) => {
+    const msg = JSON.parse(event.data) as {
+        type: string;
+        value: unknown;
+    };
+
+    if (msg.type === "message") {
+        const item = msg.value as { senderId: string; content: string };
+
+        // Do something with the newly received message
+    }
+};
 ```
 
 ### Handling Disconnections
