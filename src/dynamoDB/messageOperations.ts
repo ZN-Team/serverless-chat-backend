@@ -2,19 +2,19 @@ import { v4 } from 'uuid';
 import { Client, GetMessagesBody, SendMessageBody } from '../types';
 import { docClient } from '../utils/apiGateway';
 import { MESSAGES_TABLE_NAME } from '../utils/constants';
-import { getNicknameToNickname } from '../utils/parsers';
+import { getRoomIdFromUserIds } from '../utils/parsers';
 
 export const saveMessage = async (client: Client, body: SendMessageBody) => {
-    const nicknameToNickname = getNicknameToNickname([client.nickname, body.recipientNickname]);
+    const roomId = getRoomIdFromUserIds([client.userId, body.recipientId]);
 
     await docClient
         .put({
             TableName: MESSAGES_TABLE_NAME,
             Item: {
                 messageId: v4(),
-                nicknameToNickname,
+                roomId,
                 message: body.message,
-                sender: client.nickname,
+                sender: client.userId,
                 createdAt: new Date().getTime(),
             },
         })
@@ -25,11 +25,11 @@ export const getMessages = async (client: Client, body: GetMessagesBody) => {
     const output = await docClient
         .query({
             TableName: MESSAGES_TABLE_NAME,
-            IndexName: 'NicknameToNicknameIndex',
-            KeyConditionExpression: '#nicknameToNickname = :nicknameToNickname',
-            ExpressionAttributeNames: { '#nicknameToNickname': 'nicknameToNickname' },
+            IndexName: 'RoomIdIndex',
+            KeyConditionExpression: '#roomId = :roomId',
+            ExpressionAttributeNames: { '#roomId': 'roomId' },
             ExpressionAttributeValues: {
-                ':nicknameToNickname': getNicknameToNickname([client.nickname, body.targetNickname]),
+                ':roomId': getRoomIdFromUserIds([client.userId, body.targetId]),
             },
             Limit: body.limit,
             ExclusiveStartKey: body.startKey,

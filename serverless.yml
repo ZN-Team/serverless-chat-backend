@@ -81,15 +81,15 @@ resources:
                 AttributeDefinitions:
                     - AttributeName: connectionId
                       AttributeType: S
-                    - AttributeName: nickname
+                    - AttributeName: userId
                       AttributeType: S
                 KeySchema:
                     - AttributeName: connectionId
                       KeyType: HASH
                 GlobalSecondaryIndexes:
-                    - IndexName: NicknameIndex
+                    - IndexName: UserIdIndex
                       KeySchema:
-                          - AttributeName: nickname
+                          - AttributeName: userId
                             KeyType: HASH
                       ProvisionedThroughput:
                           ReadCapacityUnits: 1
@@ -108,7 +108,7 @@ resources:
                       AttributeType: S
                     - AttributeName: createdAt
                       AttributeType: N
-                    - AttributeName: nicknameToNickname
+                    - AttributeName: roomId
                       AttributeType: S
                 KeySchema:
                     - AttributeName: messageId
@@ -116,9 +116,9 @@ resources:
                     - AttributeName: createdAt
                       KeyType: RANGE
                 GlobalSecondaryIndexes:
-                    - IndexName: NicknameToNicknameIndex
+                    - IndexName: RoomIdIndex
                       KeySchema:
-                          - AttributeName: nicknameToNickname
+                          - AttributeName: roomId
                             KeyType: HASH
                           - AttributeName: createdAt
                             KeyType: RANGE

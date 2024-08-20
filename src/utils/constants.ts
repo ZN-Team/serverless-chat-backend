@@ -1,4 +1,4 @@
-export const NICKNAME_SEPARATOR = '#';
+export const ROOM_ID_SEPARATOR = '#';
 
 export const CLIENTS_TABLE_NAME = 'Clients';
 export const MESSAGES_TABLE_NAME = 'Messages';

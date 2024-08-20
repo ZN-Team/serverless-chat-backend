@@ -1,4 +1,4 @@
-import { getClient, getConnectionIdByNickname } from '../dynamoDB/clientOperations';
+import { getClient, getConnectionIdByUserId } from '../dynamoDB/clientOperations';
 import { getMessages, saveMessage } from '../dynamoDB/messageOperations';
 import { postToConnection } from '../utils/apiGateway';
 import { responseOK } from '../utils/constants';
@@ -9,14 +9,14 @@ export const handleSendMessage = async (connectionId: string, body: string | nul
     const sendMessageBody = parseSendMessageBody(body);
 
     await saveMessage(client, sendMessageBody);
-    const recipientConnectionId = await getConnectionIdByNickname(sendMessageBody.recipientNickname);
+    const recipientConnectionId = await getConnectionIdByUserId(sendMessageBody.recipientId);
 
     if (recipientConnectionId) {
         await postToConnection(
             recipientConnectionId,
             JSON.stringify({
                 type: 'message',
-                value: { sender: client.nickname, message: sendMessageBody.message },
+                value: { sender: client.userId, message: sendMessageBody.message },
             })
         );
     }

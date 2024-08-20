@@ -1,23 +1,26 @@
 import { APIGatewayProxyEventQueryStringParameters } from 'aws-lambda';
-import { addClient, getConnectionIdByNickname, notifyClientChange, removeClient } from '../dynamoDB/clientOperations';
+import { addClient, getConnectionIdByUserId, notifyClientChange, removeClient } from '../dynamoDB/clientOperations';
 import { postToConnection } from '../utils/apiGateway';
 import { responseForbidden, responseOK } from '../utils/constants';
+
+const USER_ID_QUERY_PARAM = 'userId';
 
 export const handleConnect = async (
     connectionId: string,
     queryParameters: APIGatewayProxyEventQueryStringParameters | null
 ) => {
-    if (!queryParameters || !queryParameters['nickname']) {
+    const userId = queryParameters?.[USER_ID_QUERY_PARAM];
+    if (!userId) {
         return responseForbidden;
     }
 
-    // TODO: Allow multiple connections with the same nickname
-    const existingConnectionId = await getConnectionIdByNickname(queryParameters['nickname']);
+    // TODO: Allow multiple connections with the same user
+    const existingConnectionId = await getConnectionIdByUserId(userId);
     if (existingConnectionId && (await postToConnection(existingConnectionId, JSON.stringify({ type: 'ping' })))) {
         return responseForbidden;
     }
 
-    await addClient(connectionId, queryParameters['nickname']);
+    await addClient(connectionId, userId);
     await notifyClientChange(connectionId);
 
     return responseOK;

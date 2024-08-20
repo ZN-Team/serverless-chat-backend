@@ -2,16 +2,16 @@ export type Action = 'getClients' | 'getMessages' | 'sendMessage' | '$connect' |
 
 export interface Client {
     connectionId: string;
-    nickname: string;
+    userId: string;
 }
 
 export interface SendMessageBody {
-    recipientNickname: string;
+    recipientId: string;
     message: string;
 }
 
 export interface GetMessagesBody {
-    targetNickname: string;
+    targetId: string;
     startKey: AWS.DynamoDB.DocumentClient.Key | undefined;
     limit: number;
 }
