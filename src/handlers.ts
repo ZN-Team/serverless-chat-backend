@@ -16,6 +16,7 @@ export const handle = async (event: APIGatewayProxyEvent): Promise<APIGatewayPro
                 return handleConnect(connectionId, event.queryStringParameters);
             case '$disconnect':
                 return handleDisconnect(connectionId);
+            // TODO: Remove this case
             case 'getClients':
                 return handleGetClients(connectionId);
             case 'sendMessage':

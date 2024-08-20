@@ -5,7 +5,7 @@ import { HandlerError } from './errorHandler';
 export const parseSendMessageBody = (body: string | null): SendMessageBody => {
     const sendMsgBody = JSON.parse(body || '{}') as SendMessageBody;
 
-    if (!sendMsgBody || !sendMsgBody.recipientId || !sendMsgBody.message) {
+    if (!sendMsgBody || !sendMsgBody.recipientId || !sendMsgBody.content) {
         throw new HandlerError('invalid SendMessageBody');
     }
 

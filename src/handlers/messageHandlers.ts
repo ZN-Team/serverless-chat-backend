@@ -16,7 +16,7 @@ export const handleSendMessage = async (connectionId: string, body: string | nul
             recipientConnectionId,
             JSON.stringify({
                 type: 'message',
-                value: { senderId: client.userId, message: sendMessageBody.message },
+                value: { senderId: client.userId, content: sendMessageBody.content },
             })
         );
     }

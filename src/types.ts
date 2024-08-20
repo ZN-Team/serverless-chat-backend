@@ -7,7 +7,7 @@ export interface Client {
 
 export interface SendMessageBody {
     recipientId: string;
-    message: string;
+    content: string;
 }
 
 export interface GetMessagesBody {

@@ -13,7 +13,7 @@ export const saveMessage = async (client: Client, body: SendMessageBody) => {
             Item: {
                 messageId: v4(),
                 roomId,
-                content: body.message,
+                content: body.content,
                 senderId: client.userId,
                 createdAt: new Date().getTime(),
             },
