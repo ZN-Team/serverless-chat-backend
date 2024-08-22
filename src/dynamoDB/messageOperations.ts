@@ -1,24 +1,33 @@
-import { v4 } from 'uuid';
-import { Client, GetMessagesBody, SendMessageBody } from '../types';
+import { nanoid } from 'nanoid';
+import { Client, GetMessagesBody, MessageItem, SendMessageBody } from '../types';
 import { docClient } from '../utils/apiGateway';
 import { MESSAGES_TABLE_NAME } from '../utils/constants';
 import { getRoomIdFromUserIds } from '../utils/parsers';
 
+export const createMessageItemFromSendMessageBody = (client: Client, body: SendMessageBody): MessageItem => {
+    return {
+        id: nanoid(),
+        userId: client.userId,
+        createdAt: new Date().getTime(),
+
+        content: body.message.content,
+        roomId: getRoomIdFromUserIds([client.userId, body.recipientId]),
+        fileIds: body.message.fileIds ?? [],
+        fileMetadata: body.message.fileMetadata ?? {},
+    };
+};
+
 export const saveMessage = async (client: Client, body: SendMessageBody) => {
-    const roomId = getRoomIdFromUserIds([client.userId, body.recipientId]);
+    const messageItem: MessageItem = createMessageItemFromSendMessageBody(client, body);
 
     await docClient
         .put({
             TableName: MESSAGES_TABLE_NAME,
-            Item: {
-                messageId: v4(),
-                roomId,
-                content: body.content,
-                senderId: client.userId,
-                createdAt: new Date().getTime(),
-            },
+            Item: messageItem,
         })
         .promise();
+
+    return messageItem;
 };
 
 export const getMessages = async (client: Client, body: GetMessagesBody) => {
