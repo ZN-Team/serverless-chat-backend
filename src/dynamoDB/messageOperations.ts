@@ -1,4 +1,4 @@
-import { v4 } from 'uuid';
+import { nanoid } from 'nanoid';
 import { Client, GetMessagesBody, SendMessageBody } from '../types';
 import { docClient } from '../utils/apiGateway';
 import { MESSAGES_TABLE_NAME } from '../utils/constants';
@@ -11,7 +11,7 @@ export const saveMessage = async (client: Client, body: SendMessageBody) => {
         .put({
             TableName: MESSAGES_TABLE_NAME,
             Item: {
-                messageId: v4(),
+                messageId: nanoid(),
                 roomId,
                 content: body.content,
                 senderId: client.userId,
