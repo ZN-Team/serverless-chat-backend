@@ -24,6 +24,7 @@ export interface MessageItem {
 }
 
 export interface SendMessageBody {
+    action: 'sendMessage';
     recipientId: string;
     messageContent: string;
     mediaName: string;

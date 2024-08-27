@@ -13,13 +13,18 @@ export const handleSendMessage = async (connectionId: string, body: string | nul
     const otherConnectionIdsOfCurrentUser = await getAllConnectionsByUserId(client.userId);
 
     const connectionIdsToBeNotified = recipientConnectionIds
-        ? [...recipientConnectionIds, ...otherConnectionIdsOfCurrentUser.filter(c => c !== connectionId)]
+        ? [...recipientConnectionIds, ...otherConnectionIdsOfCurrentUser]
         : [];
+
+    const {action, recipientId, ...messageToBeSent} = {
+        ...sendMessageBody,
+        ...newMessage,
+    }
 
     if (connectionIdsToBeNotified) {
         const message = JSON.stringify({
             type: 'message',
-            value: { senderId: client.userId, message: newMessage },
+            value: { senderId: client.userId, message: messageToBeSent },
         });
 
         await postMessageToMultipleConnections(connectionIdsToBeNotified, message);
