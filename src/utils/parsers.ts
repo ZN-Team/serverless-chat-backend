@@ -13,11 +13,7 @@ export const parseSendMessageBody = (body: string | null): SendMessageBody => {
         throw new HandlerError('Recipient ID is missing in SendMessageBody.');
     }
 
-    if (!sendMsgBody.message) {
-        throw new HandlerError('Message object is missing in SendMessageBody.');
-    }
-
-    if (!sendMsgBody.message.messageContent) {
+    if (!sendMsgBody.messageContent) {
         throw new HandlerError('Message content is missing in SendMessageBody.');
     }
 

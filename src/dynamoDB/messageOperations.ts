@@ -6,14 +6,15 @@ import { getRoomIdFromUserIds } from '../utils/parsers';
 
 export const createMessageItemFromSendMessageBody = (client: Client, body: SendMessageBody): MessageItem => {
     return {
-        id: nanoid(),
-        userId: client.userId,
+        messageId: nanoid(),
+        senderId: client.userId,
         createdAt: new Date().getTime(),
 
-        messageContent: body.message.messageContent,
+        messageContent: body.messageContent,
         roomId: getRoomIdFromUserIds([client.userId, body.recipientId]),
-        fileIds: body.message.fileIds ?? [],
-        fileMetadata: body.message.fileMetadata ?? {},
+        mediaName: body.mediaName ?? '',
+        mediaType: body.mediaType ?? '',
+        mediaUrl: body.mediaUrl ?? '',
     };
 };
 

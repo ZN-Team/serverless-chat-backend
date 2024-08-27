@@ -13,19 +13,22 @@ export interface FileMetadata {
 }
 
 export interface MessageItem {
-    id: string;
-    userId: string;
-    createdAt: number;
-
-    messageContent: string;
+    messageId: string;
     roomId: string;
-    fileIds: string[];
-    fileMetadata: { [fileId: string]: FileMetadata };
+    messageContent: string;
+    senderId: string;
+    createdAt: number;
+    mediaName: string;
+    mediaType: string;
+    mediaUrl: string;
 }
 
 export interface SendMessageBody {
     recipientId: string;
-    message: Omit<MessageItem, 'id' | 'userId' | 'createdAt'>;
+    messageContent: string;
+    mediaName: string;
+    mediaType: string;
+    mediaUrl: string;
 }
 
 export interface GetMessagesBody {
