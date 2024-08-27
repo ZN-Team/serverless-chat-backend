@@ -5,9 +5,27 @@ export interface Client {
     userId: string;
 }
 
+export interface FileMetadata {
+    fileId: string;
+    fileName: string;
+    fileType: string;
+    downloadUrl: string;
+}
+
+export interface MessageItem {
+    id: string;
+    userId: string;
+    createdAt: number;
+
+    content: string;
+    roomId: string;
+    fileIds: string[];
+    fileMetadata: { [fileId: string]: FileMetadata };
+}
+
 export interface SendMessageBody {
     recipientId: string;
-    content: string;
+    message: Omit<MessageItem, 'id' | 'userId' | 'createdAt'>;
 }
 
 export interface GetMessagesBody {
