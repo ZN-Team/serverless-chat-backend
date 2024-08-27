@@ -13,7 +13,8 @@ export const parseSendMessageBody = (body: string | null): SendMessageBody => {
         throw new HandlerError('Recipient ID is missing in SendMessageBody.');
     }
 
-    if (!sendMsgBody.messageContent) {
+    const hasAttachment = sendMsgBody.mediaName && sendMsgBody.mediaType && sendMsgBody.mediaUrl;
+    if (!sendMsgBody.messageContent && !hasAttachment) {
         throw new HandlerError('Message content is missing in SendMessageBody.');
     }
 
