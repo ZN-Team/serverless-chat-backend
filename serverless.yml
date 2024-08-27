@@ -63,6 +63,19 @@ functions:
                   route: getMessages
             - websocket:
                   route: sendMessage
+    getMessages:
+        handler: src/getMessages.handler
+        events:
+            - http:
+                  path: messages
+                  method: get
+                  cors: true
+                  request:
+                      parameters:
+                          querystrings:
+                              roomId: true
+                              startTime: false
+                              endTime: false
 
 plugins:
     - serverless-plugin-typescript
