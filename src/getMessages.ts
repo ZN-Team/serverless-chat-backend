@@ -1,12 +1,13 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import AWS from 'aws-sdk';
 import { docClient } from './utils/apiGateway';
-import { MESSAGES_TABLE_NAME } from './utils/constants';
+import { DEFAULT_LIMIT, MESSAGES_TABLE_NAME } from './utils/constants';
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const roomId = event.queryStringParameters?.roomId;
     const startTime = event.queryStringParameters?.startTime;
     const endTime = event.queryStringParameters?.endTime;
+    const limit = event.queryStringParameters?.limit;
 
     if (!roomId) {
         return {
@@ -23,6 +24,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
         ExpressionAttributeValues: {
             ':roomId': roomId,
         },
+        Limit: limit ? Number(limit) : DEFAULT_LIMIT,
     };
 
     // Initialize ExpressionAttributeValues if it is undefined

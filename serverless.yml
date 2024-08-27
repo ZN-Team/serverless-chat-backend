@@ -76,6 +76,7 @@ functions:
                               roomId: true
                               startTime: false
                               endTime: false
+                              limit: false
 
 plugins:
     - serverless-plugin-typescript
