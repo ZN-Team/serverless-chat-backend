@@ -3,7 +3,6 @@ import { handleConnect, handleDisconnect } from './handlers/connectionHandlers';
 import { handleGetMessages, handleSendMessage } from './handlers/messageHandlers';
 import { postToConnection } from './utils/apiGateway';
 import { responseForbidden, responseOK } from './utils/constants';
-import { HandlerError } from './utils/errorHandler';
 
 export const handle = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const connectionId = event.requestContext.connectionId as string;
