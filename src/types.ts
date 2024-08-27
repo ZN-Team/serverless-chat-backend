@@ -17,7 +17,7 @@ export interface MessageItem {
     userId: string;
     createdAt: number;
 
-    content: string;
+    messageContent: string;
     roomId: string;
     fileIds: string[];
     fileMetadata: { [fileId: string]: FileMetadata };

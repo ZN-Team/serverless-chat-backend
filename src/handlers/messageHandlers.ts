@@ -1,6 +1,6 @@
-import { getClient, getConnectionIdByUserId } from '../dynamoDB/clientOperations';
+import { getAllConnectionsByUserId, getClient } from '../dynamoDB/clientOperations';
 import { getMessages, saveMessage } from '../dynamoDB/messageOperations';
-import { postToConnection } from '../utils/apiGateway';
+import { postMessageToMultipleConnections, postToConnection } from '../utils/apiGateway';
 import { responseOK } from '../utils/constants';
 import { getRoomIdFromUserIds, parseGetMessageBody, parseSendMessageBody } from '../utils/parsers';
 
@@ -9,16 +9,20 @@ export const handleSendMessage = async (connectionId: string, body: string | nul
     const sendMessageBody = parseSendMessageBody(body);
 
     const newMessage = await saveMessage(client, sendMessageBody);
-    const recipientConnectionId = await getConnectionIdByUserId(sendMessageBody.recipientId);
+    const recipientConnectionIds = await getAllConnectionsByUserId(sendMessageBody.recipientId);
+    const otherConnectionIdsOfCurrentUser = await getAllConnectionsByUserId(client.userId);
 
-    if (recipientConnectionId) {
-        await postToConnection(
-            recipientConnectionId,
-            JSON.stringify({
-                type: 'message',
-                value: { senderId: client.userId, message: newMessage },
-            })
-        );
+    const connectionIdsToBeNotified = recipientConnectionIds
+        ? [...recipientConnectionIds, ...otherConnectionIdsOfCurrentUser.filter(c => c !== connectionId)]
+        : [];
+
+    if (connectionIdsToBeNotified) {
+        const message = JSON.stringify({
+            type: 'message',
+            value: { senderId: client.userId, message: newMessage },
+        });
+
+        await postMessageToMultipleConnections(connectionIdsToBeNotified, message);
     }
 
     return responseOK;

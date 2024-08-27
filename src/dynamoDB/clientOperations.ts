@@ -1,5 +1,5 @@
 import { Client } from '../types';
-import { docClient, postToConnection } from '../utils/apiGateway';
+import { docClient } from '../utils/apiGateway';
 import { CLIENTS_TABLE_NAME } from '../utils/constants';
 
 // Add getClient function here
@@ -24,6 +24,19 @@ export const addClient = async (connectionId: string, userId: string) => {
 
 export const removeClient = async (connectionId: string) => {
     await docClient.delete({ TableName: CLIENTS_TABLE_NAME, Key: { connectionId } }).promise();
+};
+
+export const getAllConnectionsByUserId = async (userId: string): Promise<string[]> => {
+    const output = await docClient
+        .query({
+            TableName: CLIENTS_TABLE_NAME,
+            IndexName: 'UserIdIndex',
+            KeyConditionExpression: '#userId = :userId',
+            ExpressionAttributeNames: { '#userId': 'userId' },
+            ExpressionAttributeValues: { ':userId': userId },
+        })
+        .promise();
+    return output.Items?.map(item => item.connectionId) || [];
 };
 
 export const getConnectionIdByUserId = async (userId: string): Promise<string | undefined> => {

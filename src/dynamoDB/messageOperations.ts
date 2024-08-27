@@ -10,7 +10,7 @@ export const createMessageItemFromSendMessageBody = (client: Client, body: SendM
         userId: client.userId,
         createdAt: new Date().getTime(),
 
-        content: body.message.content,
+        messageContent: body.message.messageContent,
         roomId: getRoomIdFromUserIds([client.userId, body.recipientId]),
         fileIds: body.message.fileIds ?? [],
         fileMetadata: body.message.fileMetadata ?? {},

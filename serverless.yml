@@ -53,7 +53,7 @@ provider:
 
 functions:
     websocketHandler:
-        handler: src/handlers.handle
+        handler: src/websocket.handle
         events:
             - websocket:
                   route: $connect

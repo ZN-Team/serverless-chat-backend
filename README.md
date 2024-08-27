@@ -2,7 +2,9 @@
 
 ## Overview
 
-The Serverless Chat Application is a real-time chat service built using the AWS Serverless stack. It leverages AWS Lambda, DynamoDB, and API Gateway (WebSocket) to provide a scalable, low-latency messaging platform.
+The Serverless Chat Application is a real-time chat service built using the
+AWS Serverless stack. It leverages AWS Lambda, DynamoDB, and API Gateway
+(WebSocket) to provide a scalable, low-latency messaging platform.
 
 ## Quick Start
 

@@ -5,8 +5,20 @@ import { HandlerError } from './errorHandler';
 export const parseSendMessageBody = (body: string | null): SendMessageBody => {
     const sendMsgBody = JSON.parse(body || '{}') as SendMessageBody;
 
-    if (!sendMsgBody || !sendMsgBody.recipientId || !sendMsgBody.message || !sendMsgBody.message.content) {
-        throw new HandlerError('invalid SendMessageBody');
+    if (!sendMsgBody) {
+        throw new HandlerError('Request body is missing or malformed.');
+    }
+
+    if (!sendMsgBody.recipientId) {
+        throw new HandlerError('Recipient ID is missing in SendMessageBody.');
+    }
+
+    if (!sendMsgBody.message) {
+        throw new HandlerError('Message object is missing in SendMessageBody.');
+    }
+
+    if (!sendMsgBody.message.messageContent) {
+        throw new HandlerError('Message content is missing in SendMessageBody.');
     }
 
     return sendMsgBody;
@@ -15,8 +27,16 @@ export const parseSendMessageBody = (body: string | null): SendMessageBody => {
 export const parseGetMessageBody = (body: string | null): GetMessagesBody => {
     const getMessagesBody = JSON.parse(body || '{}') as GetMessagesBody;
 
-    if (!getMessagesBody || !getMessagesBody.targetId || !getMessagesBody.limit) {
-        throw new HandlerError('invalid GetMessageBody');
+    if (!getMessagesBody) {
+        throw new HandlerError('Request body is missing or malformed.');
+    }
+
+    if (!getMessagesBody.targetId) {
+        throw new HandlerError('Target ID is missing in GetMessagesBody.');
+    }
+
+    if (!getMessagesBody.limit) {
+        throw new HandlerError('Limit is missing in GetMessagesBody.');
     }
 
     return getMessagesBody;
