@@ -49,7 +49,10 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
         // Return the results
         return {
             statusCode: 200,
-            body: JSON.stringify(result.Items),
+            body: JSON.stringify({
+                messages: result.Items?.length ? result.Items : [],
+                lastEvaluatedKey: result.LastEvaluatedKey,
+            }),
         };
     } catch (error) {
         // Handle any errors

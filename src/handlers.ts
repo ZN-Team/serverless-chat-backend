@@ -23,7 +23,7 @@ export const handle = async (event: APIGatewayProxyEvent): Promise<APIGatewayPro
                 return responseForbidden;
         }
     } catch (e) {
-        if (e instanceof HandlerError) {
+        if (e instanceof Error && e.name === 'HandlerError') {
             await postToConnection(connectionId, JSON.stringify({ type: 'error', message: e.message }));
             return responseOK;
         }
